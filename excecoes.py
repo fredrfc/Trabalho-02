@@ -1,0 +1,2 @@
+class ValidacaoError(Exception):
+  
