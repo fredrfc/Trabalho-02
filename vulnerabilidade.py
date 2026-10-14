@@ -7,7 +7,7 @@ class Vulnerabilidade:
         self.status = status
         self.data = data
 
-    def obj_para_dict(self):
+    def para_dict(self):
         return {
             'id': self.id,
             'descricao': self.descricao,
@@ -16,13 +16,8 @@ class Vulnerabilidade:
             'status': self.status,
             'data': self.data,
         }
-    
-    def dict_para_obj(self):
-        return {
-            self.id: 'id',
-            self.descricao: 'descricao',
-            self.categoria: 'categoria',
-            self.cvss: 'cvss',
-            self.status: 'status',
-            self.data: 'data',
-        }
+
+    @classmethod
+    def de_dict(cls, dados):
+        return cls(dados["id"], dados["descricao"], dados["categoria"],
+               dados["cvss"], dados["status"], dados["data"])
