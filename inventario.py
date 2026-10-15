@@ -1,3 +1,6 @@
+from datetime import datetime
+from classes import Status
+from vulnerabilidade import Vulnerabilidade
 from excecoes import ValidacaoError
 from equipamentos import FABRICA
 import json
@@ -24,7 +27,7 @@ class Inventario:
             equip = FABRICA[d['tipo']].de_dict(d)
             self.equipamentos[equip.id] = equip
 
-    def cadastrar(self, tipo, id_ativo, hostname, responsavel, setor):
+    def cadastrar_ativo(self, tipo, id_ativo, hostname, responsavel, setor):
         if tipo not in FABRICA:
             raise ValidacaoError(f'Tipo inválido: {tipo}')
 
@@ -58,3 +61,15 @@ class Inventario:
             if equip.hostname.lower() == hostname.lower():
                 return equip
         raise ValidacaoError('Não existe um ativo cadastrado com esse hostname.')
+    
+    def cadastrar_vulnerabilidade(self, id_ativo, id_vuln, descricao, categoria, cvss, data, status):
+        equip = self.buscar_id(id_ativo)
+
+        if not id_vuln.strip() or not descricao.strip() or not categoria.strip():
+            raise ValidacaoError('Os campos de ID, descrição e categoria devem ser preenchidos.')
+        
+        vuln = Vulnerabilidade(id_vuln.strip(), descricao.strip(), categoria.strip(), cvss, data, status)
+        equip.vulnerabilidades.append(vuln)
+        self.salvar()
+        return vuln
+    
