@@ -1,5 +1,7 @@
 from excecoes import ValidacaoError
 from equipamentos import FABRICA
+import json
+import os
 
 class Inventario:
     def __init__(self):
@@ -26,14 +28,16 @@ class Inventario:
         return equip
 
     def buscar_id(self, id_ativo):
+        
+        if not id_ativo.strip():
+            raise ValidacaoError('O campo não pode estar vazio.')
+        
         if id_ativo not in self.equipamentos:
             raise ValidacaoError('Não existe um ativo cadastrado com esse ID.')
         return self.equipamentos[id_ativo]
 
     def buscar_hostname(self, hostname):
-        alvo = hostname.strip().lower()
         for equip in self.equipamentos.values():
-            if equip.hostname.lower() == alvo:
+            if equip.hostname.lower() == hostname.lower():
                 return equip
         raise ValidacaoError('Não existe um ativo cadastrado com esse hostname.')
-      
