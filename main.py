@@ -6,17 +6,19 @@ class Menu:
     def __init__(self, inventario):
         self.inv = inventario
         self.acoes = {
-            '1': self.buscar_ativo,
-            '2': self.listar_ativos,
+            '1': self.listar_ativo,
+            '2': self.buscar_ativos,
             '3': self.cadastrar_ativo,
+            '4': self.atualizar_ativo,
+            '5': self.remover_ativo,
         }
 
     def exibir(self):
         print('\n' + '=' * 30)
         print('SISTEMA DE CADASTRO DE ATIVOS')
         print('=' * 30)
-        print('1. Buscar ativo')
-        print('2. Listar todos os ativos')
+        print('1. Listar todos os ativos')
+        print('2. Buscar ativos')
         print('3. Cadastrar novo ativo')
         print('4. Atualizar ativo')
         print('5. Remover ativo')
@@ -49,6 +51,34 @@ class Menu:
         self.inv.cadastrar_ativo(tipo, id_ativo, hostname, responsavel, setor)
         print('Sucesso! O ativo foi cadastrado.')
 
+    def atualizar_ativo(self):
+        id_ativo = self.ler_int('Digite o ID do ativo a ser atualizado: ')
+        equip = self.inv.buscar_id(id_ativo)
+        self.mostrar_ativo(equip)
+
+        print('\nPressione [ENTER] para manter o valor atual.')
+        hostname = input(f'Novo hostname [{equip.hostname}]: ')
+        responsavel = input(f'Novo responsável [{equip.responsavel}]: ')
+        setor = input(f'Novo setor [{equip.setor}]: ')
+
+        self.inv.atualizar(id_ativo, hostname, responsavel, setor)
+        print(f'\nSucesso! O ativo {id_ativo} foi atualizado.')
+
+    def remover_ativo(self):
+        id_ativo = self.ler_int('Digite o ID do ativo a ser removido: ')
+        equip = self.inv.buscar_id(id_ativo)
+        self.mostrar_ativo(equip)
+
+        confirmacao = input('\nTem certeza que deseja remover este ativo? [s/n]: ').strip().lower()
+        if confirmacao == 'n':
+            print('Operação cancelada.')
+            return
+        elif confirmacao == 's':
+            self.inv.remover(id_ativo)
+            print(f'\nSucesso! O ativo {id_ativo} foi removido do sistema.')
+        else:
+            raise ValidacaoError('Digite [s] ou [n].')
+        
     def mostrar_ativo(self, e):
         print('\n' + '=' * 30)
         print(f'ID: {e.id}')
