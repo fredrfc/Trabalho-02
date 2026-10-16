@@ -1,0 +1,73 @@
+from excecoes import ValidacaoError
+from inventario import Inventario
+from classes import TipoAtivo
+
+class Menu:
+    def __init__(self, inventario):
+        self.inv = inventario
+        self.acoes = {
+            '3': self.cadastrar_ativo,
+        }
+
+    def exibir(self):
+        print('\n' + '=' * 30)
+        print('SISTEMA DE CADASTRO DE ATIVOS')
+        print('=' * 30)
+        print('1. Buscar ativo')
+        print('2. Listar todos os ativos')
+        print('3. Cadastrar novo ativo')
+        print('4. Atualizar ativo')
+        print('5. Remover ativo')
+        print('6. Cadastrar vulnerabilidade')
+        print('7. Listar vulnerabilidades')
+        print('8. Atualizar vulnerabilidade')
+        print('9. Sair')
+
+    def ler_int(self, texto):
+        valor = input(texto).strip()
+        if not valor.isdigit():
+            raise ValidacaoError('Digite um número inteiro positivo')
+        return int(valor)
+
+    def cadastrar_ativo(self):
+        id_ativo = self.ler_int('Digite o ID do novo ativo: ')
+        hostname = input('Digite o hostname: ')
+        responsavel = input('Digite o nome do responsável: ')
+        setor = input('Digite o setor/localização: ')
+
+        tipos = [TipoAtivo]
+        print('\nTIPOS DE ATIVOS:')
+        for i, t in enumerate(tipos, 1):
+            print(f'{i}.{t.name}')
+        n = self.ler_int('Digite o número correspondente ao tipo do ativo: ')
+        if not 1<= n <= len(tipos):
+            raise ValidacaoError(f'{n} não é uma opção válida.')
+        tipo = tipos[n - 1].name
+
+        self.inv.cadastrar_ativo(tipo, id_ativo, hostname, responsavel, setor)
+        print('Sucesso! O ativo foi cadastrado.')
+
+    def executar(self):
+        while True:
+            self.exibir()
+            opcao = input('\nDigite o número da opção: ').strip()
+
+            if opcao == '9':
+                print('\nEncerrando o programa...')
+                break
+
+            acao = self.acoes.get(opcao)
+            if acao is None:
+                print('\nOpção inválida (escolha de 1 a 9)')
+                continue
+
+            try:
+                acao()
+            except ValidacaoError as e:
+                print(f'\nOcorreu um erro do tipo: {e}')
+
+if __name__ == '__main__':
+    try:
+        Menu(Inventario()).executar()
+    except (KeyboardInterrupt, EOFError):
+        print('\nPrograma encerrado pelo usuário')
