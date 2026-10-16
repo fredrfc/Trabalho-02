@@ -91,3 +91,32 @@ class Inventario:
             for vuln in equip.vulnerabilidades:
                 lista.append((equip, vuln))
         return lista
+    
+    def remover(self, id_ativo):
+        equip = self.buscar_id(id_ativo)
+        del self.equipamentos[id_ativo]
+
+        for outro in self.equipamentos.values():
+            outro.dependencias.pop(str(id_ativo), None)
+
+        self.salvar()
+        return equip
+    
+    def atualizar(self, id_ativo, hostname=None, responsavel=None, setor=None):
+        equip = self.buscar_id(id_ativo)
+
+        if hostname is not None and hostname.strip():
+            novo = hostname.strip()
+            for outro in self.equipamentos.values():
+                if outro.id != id_ativo and outro.hostname.lower() == novo.lower():
+                    raise ValidacaoError('Já existe um ativo cadastrado com esse hostname.')
+            equip.hostname = novo
+
+        if responsavel is not None and responsavel.strip():
+            equip.responsavel = responsavel.strip()
+
+        if setor is not None and setor.strip():
+            equip.setor = setor.strip()
+
+        self.salvar()
+        return equip
