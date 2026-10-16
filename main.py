@@ -1,6 +1,6 @@
 from excecoes import ValidacaoError
 from inventario import Inventario
-from classes import TipoAtivo
+from classes import TipoAtivo, Status
 
 class Menu:
     def __init__(self, inventario):
@@ -106,6 +106,48 @@ class Menu:
             raise ValidacaoError('Opção de buscar inválida')
         
         self.mostrar_ativo(equip)
+
+    def cadastrar_vulnerabilidade(self):
+        id_ativo = self.ler_int('Digite o ID de um ativo cadastrado: ')
+        self.inv.buscar_id(id_ativo)
+
+        id_vuln = input('ID da vulnerabilidade (ex: CVE-2026-9855): ')
+        descricao = input('Descrição: ')
+        categoria = input('Categoria (ex: software desatualizado): ')
+        cvss = input('CVSS (0 a 10): ')
+
+        status_lista = [Status]
+        print('\nOPÇÕES DE STATUS')
+        for i, s in enumerate(status_lista, 1):
+            print(f'{i}.{s.name}')
+        
+        n = self.ler_int('Digite o número correspondente ao status da vulnerabilidade: ')
+        if not 1 <= n <= len(status_lista):
+            raise ValidacaoError('Opção de status inválida.')
+        status = status_lista[n - 1].name
+
+        data = input('Data de identificação (DD/MM/AAAA): ').strip()
+
+        self.inv.cadastrar_vulnerabilidade(id_ativo, id_vuln, descricao, categoria, cvss, data, status)
+        print('\nSucesso! A vulnerabilidade foi cadastrada.')
+
+    def listar_vulnerabilidades(self):
+        pares = self.inv.listar_vulnerabilidades()
+        if not pares:
+            print('\nNenhuma vulnerabilidde cadastrada.')
+            return
+        
+        print(f'\nVulnerabilidades cadastradas ({len(pares)})')
+        print('=' * 40)
+        for equip, v in pares:
+            print(f'Ativo: {equip.hostname} (ID: {equip.id})')
+            print(f'ID: {v.id}')
+            print(f'Descrição: {v.descricao}')
+            print(f'Categoria: {v.categoria}')
+            print(f'CVSS: {v.cvss}')
+            print(f'Status: {v.status}')
+            print(f'Data: {v.data}')
+            print('=' * 40)
 
     def executar(self):
         while True:
