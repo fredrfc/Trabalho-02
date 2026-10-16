@@ -85,12 +85,15 @@ class Inventario:
         self.salvar()
         return vuln
         
+    def listar_ativos(self):
+        return [self.equipamentos.values()]
+
     def listar_vulnerabilidades(self):
-        lista = []
+        lista_v = []
         for equip in self.equipamentos.values():
             for vuln in equip.vulnerabilidades:
-                lista.append((equip, vuln))
-        return lista
+                lista_v.append((equip, vuln))
+        return lista_v
     
     def remover(self, id_ativo):
         equip = self.buscar_id(id_ativo)
