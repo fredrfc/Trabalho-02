@@ -6,6 +6,8 @@ class Menu:
     def __init__(self, inventario):
         self.inv = inventario
         self.acoes = {
+            '1': self.buscar_ativo,
+            '2': self.listar_ativos,
             '3': self.cadastrar_ativo,
         }
 
@@ -46,6 +48,34 @@ class Menu:
 
         self.inv.cadastrar_ativo(tipo, id_ativo, hostname, responsavel, setor)
         print('Sucesso! O ativo foi cadastrado.')
+
+    def mostrar_ativo(self, e):
+        print('\n' + '=' * 30)
+        print(f'ID: {e.id}')
+        print(f'Hostname: {e.hostname}')
+        print(f'Tipo: {e.tipo}')
+        print(f'Responsável: {e.responsavel}')
+        print(f'Setor: {e.setor}')
+        print(f'Vulnerabilidades: {len(e.vulnerabiliddes)}')
+        for v in e.vulnerabilidades:
+            print(f'{v.id}: {v.descricao} [CVSS {v.cvss} | {v.status}]')
+        print ('=' * 30)
+
+    def buscar_ativo(self):
+        print('1. Buscar pelo ID')
+        print('2. Buscar pelo hostname')
+        escolha = input('Digite 1 ou 2: ')
+
+        if escolha == '1':
+            id_ativo = self.ler_int('Digite o ID para buscar: ')
+            equip = self.inv.buscar_id(id_ativo)
+        elif escolha == '2':
+            hostname = input('Digite o hostname para buscar: ')
+            equip = self.inv.buscar_hostname(hostname)
+        else:
+            raise ValidacaoError('Opção de buscar inválida')
+        
+        self.mostrar_ativo(equip)
 
     def executar(self):
         while True:
