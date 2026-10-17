@@ -149,6 +149,30 @@ class Menu:
             print(f'Data: {v.data}')
             print('=' * 40)
 
+    def atualizar_vulnerabilidade(self):
+        id_ativo = self.ler_int('Digite o ID do ativo para atualizar as vulnerabilidades dele.')
+        equip = self.inv.buscar_id(id_ativo)
+
+        if not equip.vulnerabilidades:
+            raise ValidacaoError('Esse ativo não possui vulnerabilidades cadastradas.')
+        
+        print(f'\nVulnerabilidades do ativo {equip.hostname}:')
+        for v in equip.vulnerabilidades:
+            print(f'{v.id}: {v.descricao} [{v.status}]')
+
+        id_vuln = input('\nDigite o ID da vulnerabilidade a ser atualizada: ')
+
+        print('\nPressione [ENTER] para manter o valor atual.')
+        descricao = input('Nova descrição: ')
+        categoria = input('Nova categoria: ')
+
+        status = None
+        if input('Deseja alterar o status? [s/n]: ').strip().lower():
+            status = self.escolher_status()
+
+        self.inv.atualizar_vulnerabilidade(id_ativo, id_vuln, descricao, categoria, status)
+        print('\nSucesso! A vulnerabilidade foi atualizada.')
+        
     def executar(self):
         while True:
             self.exibir()
