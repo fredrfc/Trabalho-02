@@ -40,9 +40,8 @@ class Inventario:
         if id_ativo in self.equipamentos:
             raise ValidacaoError(f'Já existe um ativo com o ID: {id_ativo}.')
 
-        alvo = hostname.strip().lower()
         for equip in self.equipamentos.values():
-            if equip.hostname.lower() == alvo:
+            if equip.hostname.lower() == hostname.strip().lower():
                 raise ValidacaoError('Já existe um ativo cadastrado com esse hostname.')
 
         equip = FABRICA[tipo](id_ativo, hostname.strip(), responsavel.strip(), setor.strip())
