@@ -152,28 +152,27 @@ class Inventario:
         return vuln
         
     def cadastrar_dependencia(self, id_dependencia, id_ativo, fracao):
+        equip = self.buscar_id(id_ativo)
+        self.buscar_id(id_dependencia)
 
-    equip = self.buscar_id(id_ativo)
-    self.buscar_id(id_dependencia)
-
-    if id_dependencia == id_ativo:
-        raise ValidacaoError('Um ativo não pode depender dele mesmo.')
+        if id_dependencia == id_ativo:
+            raise ValidacaoError('Um ativo não pode depender dele mesmo.')
     
-    try:
-        fracao = float(fracao)
-    except (TypeError, ValueError):
-        raise ValidacaoError('A fração deve ser um número.')
+        try:
+            fracao = float(fracao)
+        except (TypeError, ValueError):
+            raise ValidacaoError('A fração deve ser um número.')
     
-    if not 0 <= fracao < 1:
-        raise ValidacaoError('A fração deve ser maior ou igual a 0 e menor do que 1.')  
+        if not 0 <= fracao < 1:
+            raise ValidacaoError('A fração deve ser maior ou igual a 0 e menor do que 1.')  
     
-    soma = 0
-    for chave, valor in equip.dependencias.items():
-        if chave != str(id_dependencia):
-            soma += valor
-    if soma + fracao < 1:
-        raise ValidacaoError('A soma das frações de um ativo devem ser menor do que 1.')
+        soma = 0
+        for chave, valor in equip.dependencias.items():
+            if chave != str(id_dependencia):
+                soma += valor
+        if soma + fracao >= 1:
+            raise ValidacaoError('A soma das frações de um ativo deve ser menor do que 1.')
     
-    equip.dependencias[str(id_dependencia)] = fracao
-    self.salvar()
-    
+        equip.dependencias[str(id_dependencia)] = fracao
+        self.salvar()
+        return equip
