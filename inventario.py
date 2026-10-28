@@ -150,7 +150,8 @@ class Inventario:
 
         self.salvar()
         return vuln
-        
+
+    # DEPENDÊNCIAS  
     def cadastrar_dependencia(self, id_dependencia, id_ativo, fracao):
         equip = self.buscar_id(id_ativo)
         self.buscar_id(id_dependencia)
