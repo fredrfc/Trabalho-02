@@ -15,6 +15,7 @@ class Menu:
             '6': self.cadastrar_vulnerabilidade,
             '7': self.listar_vulnerabilidades,
             '8': self.atualizar_vulnerabilidade,
+            '9': self.cadastrar_dependencia
         }
 
     def exibir(self):
@@ -29,7 +30,8 @@ class Menu:
         print('6. Cadastrar vulnerabilidade')
         print('7. Listar vulnerabilidades')
         print('8. Atualizar vulnerabilidade')
-        print('9. Sair')
+        print('9. Cadastrar dependências')
+        print('10. Sair')
 
     def ler_int(self, texto):
         valor = input(texto).strip()
@@ -57,6 +59,7 @@ class Menu:
         print(f'Vulnerabilidades: {len(e.vulnerabilidades)}')
         for v in e.vulnerabilidades:
             print(f'  - {v.id}: {v.descricao} [CVSS {v.cvss} | {v.status}]')
+        print(f'Dependências: {e.dependencias if e.dependencias else "Nenhuma"}')
         print('=' * 30)
 
     # ATIVOS
@@ -190,13 +193,23 @@ class Menu:
         self.inv.atualizar_vulnerabilidade(id_ativo, id_vuln, descricao, categoria, status)
         print('\nSucesso! A vulnerabilidade foi atualizada.')
 
+    def cadastrar_dependencia(self):
+        id_ativo = self.ler_int('Digite o ID do ativo que HERDA o risco: ')
+        id_dependencia = self.ler_int('Digite o ID do ativo DE QUEM ele herda o risco: ')
+        fracao = input('Digite a fração herdada (ex: 0.5; deve ser maior ou igual a 0 e menor do que 1): ').replace(',', '.')
+
+        self.inv.cadastrar_dependencia(id_dependencia, id_ativo, fracao)
+
+        print('\nSucesso! A dependência foi adicionada ao sistema.')
+
+
     # LAÇO PRINCIPAL
     def executar(self):
         while True:
             self.exibir()
             opcao = input('\nDigite o número da opção: ').strip()
 
-            if opcao == '9':
+            if opcao == '10':
                 print('\nEncerrando o programa...')
                 break
 
