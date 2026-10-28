@@ -60,6 +60,9 @@ class Menu:
         for v in e.vulnerabilidades:
             print(f'  - {v.id}: {v.descricao} [CVSS {v.cvss} | {v.status}]')
         print(f'Dependências: {e.dependencias if e.dependencias else "Nenhuma"}')
+        if e.dependencias:
+            for origem, fracao in e.dependencias.items():
+                print(f'Herda {fracao: .0%} do ativo {origem}')
         print('=' * 30)
 
     # ATIVOS
@@ -215,7 +218,7 @@ class Menu:
 
             acao = self.acoes.get(opcao)
             if acao is None:
-                print('\nOpção inválida (escolha de 1 a 9).')
+                print('\nOpção inválida (escolha de 1 a 10).')
                 continue
 
             try:
