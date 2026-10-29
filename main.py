@@ -72,11 +72,11 @@ class Menu:
             print('\nAinda não foi cadastrado nenhum ativo.')
             return
         print(f'\nAtivos cadastrados ({len(ativos)}):')
-        print('=' * 30)
+        print('=' * 72)
         for e in ativos:
             print(f'ID {e.id} | {e.hostname} | {e.tipo} | {e.responsavel} | {e.setor}'
                   f' | {len(e.vulnerabilidades)} vulnerabilidade(s)')
-        print('=' * 30)
+        print('=' * 72)
 
     def buscar_ativo(self):
         print('\n1. Buscar pelo ID')
