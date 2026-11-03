@@ -118,6 +118,11 @@ class Inventario:
         except ValueError:
             raise ValidacaoError('Data inválida. Considere o formato DD/MM/AAAA.')
 
+        for ativo in self.equipamentos.values():
+            for v in ativo.vulnerabilidades:
+                if v.id.lower() == id_vuln.strip().lower() and v.cvss != cvss:
+                    raise ValidacaoError(f'O ID: {v.id} já existe com CVSS: {v.cvss} em outro ativo.')
+
         vuln = Vulnerabilidade(id_vuln.strip(), descricao.strip(), categoria.strip(), cvss, status, data)
         equip.vulnerabilidades.append(vuln)
         self.salvar()
