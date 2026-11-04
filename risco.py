@@ -50,3 +50,24 @@ def calcular_b(inventario, com_fator=False):
         f = np.array(fatores)
         b = f * b
     return b
+
+def montar_A(inventario):
+    ativos = inventario.listar_ativos()
+
+    posicao_ativo = {}
+    for i, ativo in enumerate(ativos):
+        posicao_ativo[ativo.id] = i
+
+    n = len(ativos)
+    A = np.zeros((n, n))
+
+    for ativo in ativos:
+        i = posicao_ativo[ativo.id]
+        for chave, fracao in ativo.dependencias.items():
+            origem = int(chave)
+            if origem not in posicao_ativo:
+                raise ValueError(f'O ativo {ativo.id} depende do ativo {origem}, que não existe.')
+            j = posicao_ativo[origem]
+            A[i, j] = fracao
+
+    return A
