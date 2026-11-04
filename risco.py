@@ -1,5 +1,4 @@
 import numpy as np
-from inventario import Inventario
 
 def montar_M_v(inventario):
     ativos = inventario.listar_ativos()
@@ -33,9 +32,9 @@ def montar_M_v(inventario):
     for ativo in ativos:
         for vuln in ativo.vulnerabilidades:
             chave = vuln.id.lower()
-            if chave in visto and 
+            if chave in visto and visto[chave] != vuln.cvss:
+                raise ValueError(f'A vulnerabilidade {vuln.id} tem notas CVSS diferentes em ativos distintos.')
+            visto[chave] = vuln.cvss
+            v[posicao_vulnerabilidade[chave]] = vuln.cvss
 
-
-    return posicao_ativo, posicao_vulnerabilidade, M
-
-
+    return posicao_ativo, posicao_vulnerabilidade, M, v
