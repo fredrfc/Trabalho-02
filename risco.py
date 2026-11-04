@@ -37,8 +37,16 @@ def montar_M_v(inventario):
             visto[chave] = vuln.cvss
             v[posicao_vulnerabilidade[chave]] = vuln.cvss
 
-    return posicao_ativo, posicao_vulnerabilidade, M, v
+    return posicao_ativo, M, v
 
-def calcular_risco(b, A):
-    b = np.array(b, dtype=float)
-    A = np.array(A, dtype=float)
+def calcular_b(inventario, com_fator=False):
+    M, v, posicao_ativo = montar_M_v(inventario)
+    ativos = inventario.listar_ativos()
+    b = M @ v
+    if com_fator:
+        fatores = []
+        for ativo in ativos:
+            fatores.append(ativo.fator_exposicao)
+        f = np.array(fatores)
+        b = f * b
+    return b
