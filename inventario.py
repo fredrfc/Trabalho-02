@@ -8,8 +8,8 @@ from vulnerabilidade import Vulnerabilidade
 
 
 class Inventario:
-    def __init__(self, arquivo='arquivo.json'):
-        self.arquivo = arquivo
+    def __init__(self, arquivo=None):
+        self.arquivo = arquivo or os.environ.get('DATA_FILE', 'arquivo.json')
         self.equipamentos = {}
         self.carregar()
 
@@ -176,7 +176,7 @@ class Inventario:
         for chave, valor in equip.dependencias.items():
             if chave != str(id_dependencia):
                 soma += valor
-        if soma + fracao >= 1:
+        if soma + fracao >= 1 - 1e-9:
             raise ValidacaoError('A soma das frações de um ativo deve ser menor do que 1.')
     
         equip.dependencias[str(id_dependencia)] = fracao
