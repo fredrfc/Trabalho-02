@@ -22,8 +22,8 @@ def montar_M_v(inventario):
 
     for ativo in ativos:
         linha = posicao_ativo[ativo.id]
-        for v in ativo.vulnerabilidades:
-            coluna = posicao_vulnerabilidade[id_vuln]
+        for vuln in ativo.vulnerabilidades:
+            coluna = posicao_vulnerabilidade[vuln.id.lower()]
             M[linha, coluna] = 1
 
     v = np.zeros(m)
@@ -37,7 +37,7 @@ def montar_M_v(inventario):
             visto[chave] = vuln.cvss
             v[posicao_vulnerabilidade[chave]] = vuln.cvss
 
-    return posicao_ativo, M, v
+    return M, v, posicao_ativo
 
 def calcular_b(inventario, com_fator=False):
     M, v, posicao_ativo = montar_M_v(inventario)
@@ -69,5 +69,43 @@ def montar_A(inventario):
                 raise ValueError(f'O ativo {ativo.id} depende do ativo {origem}, que não existe.')
             j = posicao_ativo[origem]
             A[i, j] = fracao
-
     return A
+
+def resolver_risco(b, A):
+    b = np.array(b, dtype=float)
+    A = np.array(A, dtype=float)
+    n = len(b)
+
+    if n == 0:
+        return []
+    
+    if A.shape != (n, n):
+        raise ValueError('A deve ser uma matriz quadrada de ordem n.')
+    
+    if not np.isfinite(A).all() or not np.isfinite(b).all():
+        raise ValueError('Os valores devem ser números finitos.')
+    
+    if (A < 0).any() or (A >= 1).any():
+        raise ValueError('As células da matriz A não podem ser menor do que 0 ou maior ou igual a 1.')
+    
+    if (np.diag(A) != 0).any():
+        raise ValueError('Um ativo não pode depender dele mesmo (a diagonal de A deve ser zero).')
+    
+    if (A.sum(axis=1) >= 1 - 1e-9).any():
+        raise ValueError('A soma dos valores de cada linha de A deve ser menor do que 1.')
+    
+    B = np.eye(n) - A
+
+    if np.linalg.matrix_rank(B) < n:
+        raise ValueError('O sistema é singular.')
+    
+    condicao = np.linalg.cond(B)
+    if condicao > 1e8:
+        raise ValueError(f'Sistema muito sensível a pequenos erros (cond = {condicao:.2e}); resultado pouco confiável.')
+    
+    x = np.linalg.solve(B, b)
+
+    if not np.allclose(B @ x, b, rtol=1e-8, atol=1e-10):
+        raise ValueError('A solução não passou na conferência.')
+    
+    return x.tolist()
