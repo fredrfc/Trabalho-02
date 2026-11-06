@@ -101,7 +101,7 @@ def resolver_risco(b, A):
     
     condicao = np.linalg.cond(B)
     if condicao > 1e8:
-        raise ValueError(f'Sistema muito sensível a pequenos erros (cond = {condicao:.2e}); resultado pouco confiável.')
+        raise ValueError(f'Sistema muito sensível a pequenos erros (número de condição = {condicao:.2e}); o resultado é pouco confiável.')
     
     x = np.linalg.solve(B, b)
 
