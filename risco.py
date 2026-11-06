@@ -122,7 +122,7 @@ def calculo_riscos(inventario):
         resultado.append({
             'id': ativo.id,
             'hostname': ativo.hostname,
-            'risco_próprio': float(b[i]),
+            'risco_proprio': float(b[i]),
             'risco_efetivo': float(x[i]),
         })
     return resultado
