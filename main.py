@@ -1,6 +1,7 @@
 from classes import Status, TipoAtivo
 from excecoes import ValidacaoError
 from inventario import Inventario
+from risco import calculo_riscos
 
 
 class Menu:
@@ -15,7 +16,8 @@ class Menu:
             '6': self.cadastrar_vulnerabilidade,
             '7': self.listar_vulnerabilidades,
             '8': self.atualizar_vulnerabilidade,
-            '9': self.cadastrar_dependencia
+            '9': self.cadastrar_dependencia,
+            '10': self.consultar_risco
         }
 
     def exibir(self):
@@ -31,7 +33,8 @@ class Menu:
         print('7. Listar vulnerabilidades')
         print('8. Atualizar vulnerabilidade')
         print('9. Cadastrar dependências')
-        print('10. Sair')
+        print('10. Consultar risco')
+        print('11. Sair')
 
     def ler_int(self, texto):
         valor = input(texto).strip()
@@ -205,6 +208,17 @@ class Menu:
 
         print('\nSucesso! A dependência foi adicionada ao sistema.')
 
+    def consultar_risco(self):
+        resultados = calculo_riscos(self.inv)
+
+        if not resultados:
+            print('\nNão há nenhum ativo para ser consultado.')
+            return
+
+        print('=' * 50)
+        for r in resultados:
+            print(f'ID: {r["id"]} | Hostname: {r["hostname"]} | Risco Próprio: {r["risco_proprio"]} | Risco Efetivo: {r["risco_efetivo"]}')
+        print('=' * 50)
 
     # LAÇO PRINCIPAL
     def executar(self):
@@ -212,18 +226,18 @@ class Menu:
             self.exibir()
             opcao = input('\nDigite o número da opção: ').strip()
 
-            if opcao == '10':
+            if opcao == '11':
                 print('\nEncerrando o programa...')
                 break
 
             acao = self.acoes.get(opcao)
             if acao is None:
-                print('\nOpção inválida (escolha de 1 a 10).')
+                print('\nOpção inválida (escolha de 1 a 11).')
                 continue
 
             try:
                 acao()
-            except ValidacaoError as e:
+            except (ValidacaoError, ValueError) as e:
                 print(f'\nErro: {e}')
 
 
