@@ -101,7 +101,7 @@ def resolver_risco(b, A):
     
     condicao = np.linalg.cond(B)
     if condicao > 1e8:
-        raise ValueError(f'Sistema muito sensível a pequenos erros (número de condição = {condicao:.2e}); o resultado é pouco confiável.')
+        raise ValueError(f'Sistema muito sensível a pequenos erros (cond = {condicao:.2e}); resultado pouco confiável.')
     
     x = np.linalg.solve(B, b)
 
@@ -109,3 +109,20 @@ def resolver_risco(b, A):
         raise ValueError('A solução não passou na conferência.')
     
     return x.tolist()
+
+def calculo_riscos(inventario):
+    ativos = inventario.listar_ativos()
+
+    b = calcular_b(inventario)
+    A = montar_A(inventario)
+    x = resolver_risco(b, A)
+
+    resultado = []
+    for i, ativo in enumerate(ativos):
+        resultado.append({
+            'id': ativo.id,
+            'hostname': ativo.hostname,
+            'risco_próprio': float(b[i]),
+            'risco_efetivo': float(x[i]),
+        })
+    return resultado
