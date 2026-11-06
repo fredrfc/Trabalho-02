@@ -215,10 +215,10 @@ class Menu:
             print('\nNão há nenhum ativo para ser consultado.')
             return
 
-        print('=' * 50)
+        print('=' * 63)
         for r in resultados:
             print(f'ID: {r["id"]} | Hostname: {r["hostname"]} | Risco Próprio: {r["risco_proprio"]} | Risco Efetivo: {r["risco_efetivo"]}')
-        print('=' * 50)
+        print('=' * 63)
 
     # LAÇO PRINCIPAL
     def executar(self):
