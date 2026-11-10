@@ -62,8 +62,8 @@ class Inventario:
 
         id_ativo = self.validar_id_novo(id_ativo)
         hostname = self.validar_hostname(hostname)
-        self.validar_texto(responsavel, 'responsavel')
-        self.validar_texto(setor, 'setor')
+        responsavel = self.validar_texto(responsavel, 'responsavel')
+        setor = self.validar_texto(setor, 'setor')
 
         equip = FABRICA[tipo](id_ativo, hostname, responsavel, setor)
         self.equipamentos[id_ativo] = equip
