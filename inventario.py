@@ -28,23 +28,44 @@ class Inventario:
         for d in dados:
             equip = FABRICA[d['tipo']].de_dict(d)
             self.equipamentos[equip.id] = equip
+    
+    @staticmethod
+    def validar_texto(valor, campo):
+        valor = valor.strip()
+        if not valor:
+            raise ValidacaoError(f'O campo para {campo} não pode estar vazio.')
+        return valor
+    
+    def validar_id_novo(self, id_ativo):
+        id_ativo = self.validar_texto(id_ativo, 'ID')
+        if not id_ativo.isdigit():
+            raise ValidacaoError('O ID deve ser um número inteiro e positivo.')
+        
+        id_ativo = int(id_ativo)
+
+        if id_ativo in self.equipamentos:
+            raise ValidacaoError(f'Já existe um ativo cadastrado com o ID {id_ativo}.')
+        return id_ativo
+
+    def validar_hostname(self, hostname, ignorar_id=None):
+        resultado = self.validar_texto(hostname, 'hostname')
+    
+        for equip in self.equipamentos.values():
+            if resultado.lower() == equip.hostname.lower() and equip.id != ignorar_id:
+                raise ValidacaoError(f'Já existe um ativo cadastrado com o hostname: {resultado}.')
+            return resultado
 
     # ATIVOS
     def cadastrar_ativo(self, tipo, id_ativo, hostname, responsavel, setor):
         if tipo not in FABRICA:
             raise ValidacaoError(f'Tipo inválido: {tipo}')
 
-        if not hostname.strip() or not responsavel.strip() or not setor.strip():
-            raise ValidacaoError('Os campos para hostname, responsável e setor devem ser preenchidos.')
+        id_ativo = self.validar_id_novo(id_ativo)
+        hostname = self.validar_hostname(hostname)
+        self.validar_texto(responsavel, 'responsavel')
+        self.validar_texto(setor, 'setor')
 
-        if id_ativo in self.equipamentos:
-            raise ValidacaoError(f'Já existe um ativo com o ID: {id_ativo}.')
-
-        for equip in self.equipamentos.values():
-            if equip.hostname.lower() == hostname.strip().lower():
-                raise ValidacaoError('Já existe um ativo cadastrado com esse hostname.')
-
-        equip = FABRICA[tipo](id_ativo, hostname.strip(), responsavel.strip(), setor.strip())
+        equip = FABRICA[tipo](id_ativo, hostname, responsavel, setor)
         self.equipamentos[id_ativo] = equip
         self.salvar()
         return equip
