@@ -37,12 +37,6 @@ class Inventario:
         return valor
     
     def validar_id_novo(self, id_ativo):
-        id_ativo = self.validar_texto(id_ativo, 'ID')
-        if not id_ativo.isdigit():
-            raise ValidacaoError('O ID deve ser um número inteiro e positivo.')
-        
-        id_ativo = int(id_ativo)
-
         if id_ativo in self.equipamentos:
             raise ValidacaoError(f'Já existe um ativo cadastrado com o ID {id_ativo}.')
         return id_ativo
@@ -53,7 +47,7 @@ class Inventario:
         for equip in self.equipamentos.values():
             if resultado.lower() == equip.hostname.lower() and equip.id != ignorar_id:
                 raise ValidacaoError(f'Já existe um ativo cadastrado com o hostname: {resultado}.')
-            return resultado
+        return resultado
 
     # ATIVOS
     def cadastrar_ativo(self, tipo, id_ativo, hostname, responsavel, setor):
