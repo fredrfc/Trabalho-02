@@ -41,6 +41,23 @@ class Menu:
         if not valor.isdigit():
             raise ValidacaoError('Digite um número inteiro positivo.')
         return int(valor)
+    
+    def converter_int(self, texto):
+        texto = texto.strip()
+        if not texto.isdigit():
+            raise ValidacaoError('Deve ser um número inteiro positivo.')
+        convertido = int(texto)
+        return convertido
+
+    def perguntar(self, texto, tratar, tentativas=3):
+        for tentativa in range(1, tentativas + 1):
+            try:
+                return tratar(input(texto))
+            except ValidacaoError as e:
+                print(f'Erro: {e}')
+                if tentativa < tentativas:
+                    print(f'Tente novamente. ({tentativa}/{tentativas}).')
+        raise ValidacaoError('Muitas tentativas inválidas. Operação cancelada.')
 
     def escolher_status(self):
         lista = list(Status)
