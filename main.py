@@ -64,10 +64,14 @@ class Menu:
         print('\nOPÇÕES DE STATUS:')
         for i, s in enumerate(lista, 1):
             print(f'{i}. {s.name}')
-        n = self.ler_int('Número do status: ')
-        if not 1 <= n <= len(lista):
-            raise ValidacaoError('Opção de status inválida.')
-        return lista[n - 1].name
+
+        def validar_escolha_status(texto):
+            n = self.converter_int(texto)
+            if not 1 <= n <= len(lista):
+                raise ValidacaoError('Opção de status inválida.')
+            return lista[n - 1].name
+        
+        return self.perguntar('Digite o número correspondente ao status da vulnerabilidade: ', validar_escolha_status)
 
     def mostrar_ativo(self, e):
         print('\n' + '=' * 30)
@@ -112,21 +116,27 @@ class Menu:
 
         self.mostrar_ativo(equip)
 
-    def cadastrar_ativo(self):
-        id_ativo = self.ler_int('Digite o ID do novo ativo: ')
-        hostname = input('Digite o hostname: ')
-        responsavel = input('Digite o nome do responsável: ')
-        setor = input('Digite o setor/localização: ')
-
+    def escolher_tipo(self):
         tipos = list(TipoAtivo)
         print('\nTIPOS DE ATIVOS:')
         for i, t in enumerate(tipos, 1):
             print(f'{i}. {t.name}')
-        n = self.ler_int('Digite o número correspondente ao tipo do ativo: ')
-        if not 1 <= n <= len(tipos):
-            raise ValidacaoError(f'{n} não é uma opção válida.')
-        tipo = tipos[n - 1].name
 
+        def validar(texto):
+            n = self.converter_int(texto)
+            if not 1 <= n <= len(tipos):
+                raise ValidacaoError(f'{n} não é uma opção válida.')
+            return tipos[n - 1].name
+        
+        return self.perguntar('Digite o número correspondente ao tipo do ativo: ', validar)
+
+    def cadastrar_ativo(self):
+        id_ativo = self.perguntar('Digite o ID do novo ativo: ', lambda t: self.inv.validar_id_novo(self.converter_int(t)))
+        hostname = self.perguntar('Digite o hostname: ', self.inv.validar_hostname)
+        responsavel = self.perguntar('Digite o nome do responsável pelo ativo: ', lambda t: self.inv.validar_texto(t, 'responsável'))
+        setor = self.perguntar('Digite o setor/localização: ', lambda t: self.inv.validar_texto(t, 'setor'))
+        tipo = self.escolher_tipo()
+        
         self.inv.cadastrar_ativo(tipo, id_ativo, hostname, responsavel, setor)
         print('\nSucesso! O ativo foi cadastrado.')
 
@@ -160,18 +170,21 @@ class Menu:
 
     # VULNERABILIDADES
     def cadastrar_vulnerabilidade(self):
-        id_ativo = self.ler_int('Digite o ID de um ativo cadastrado: ')
-        self.inv.buscar_id(id_ativo)
+        equip = self.perguntar('Digite o ID de um ativo cadastrado: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
+        
+        id_vuln = self.perguntar('Digite o ID da vulnerabilidade (ex: CVE-2026-9855): ', lambda t: self.inv.validar_id_vuln(equip, t))
 
-        id_vuln = input('ID da vulnerabilidade (ex: CVE-2026-9855): ')
-        descricao = input('Descrição: ')
-        categoria = input('Categoria (ex: software desatualizado): ')
-        cvss = input('CVSS (0 a 10): ')
+        descricao = self.perguntar('Escreva a descrição: ', lambda t: self.inv.validar_texto(t, 'descrição'))
+
+        categoria = self.perguntar('Escreva a categoria da vulnerabilidade (ex: Software desatualizado): ', lambda t: self.inv.validar_texto(t, 'categoria'))
+
+        cvss = self.perguntar('Digite o CVSS da vulnerabilidade (0 a 10): ', lambda t: self.inv.validar_cvss_consistente(id_vuln, self.inv.validar_cvss(t)))
+        
         status = self.escolher_status()
-        data = input('Data de identificação (DD/MM/AAAA): ').strip()
+        
+        data = self.perguntar('Digite a data de identificação (DD/MM/AAAA): ', self.inv.validar_data)
 
-        self.inv.cadastrar_vulnerabilidade(id_ativo, id_vuln, descricao,
-                                           categoria, cvss, status, data)
+        self.inv.cadastrar_vulnerabilidade(equip.id, id_vuln, descricao, categoria, cvss, status, data)
         print('\nSucesso! A vulnerabilidade foi cadastrada.')
 
     def listar_vulnerabilidades(self):
@@ -234,7 +247,7 @@ class Menu:
 
         print('=' * 63)
         for r in resultados:
-            print(f'ID: {r["id"]} | Hostname: {r["hostname"]} | Risco Próprio: {r["risco_proprio"]} | Risco Efetivo: {r["risco_efetivo"]}')
+            print(f'ID: {r["id"]} | Hostname: {r["hostname"]} | Risco Próprio: {r["risco_proprio"]:.2f} | Risco Efetivo: {r["risco_efetivo"]:.2f}')
         print('=' * 63)
 
     # LAÇO PRINCIPAL
