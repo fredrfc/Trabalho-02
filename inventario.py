@@ -106,39 +106,58 @@ class Inventario:
 
         self.salvar()
         return equip
-
+    
+    @staticmethod
+    def validar_status(status):
+        if status not in Status.__members__:
+            raise ValidacaoError(f'Status inválido: {status}')
+        return status
+    
+    @staticmethod
+    def validar_cvss(valor):
+        try:
+            cvss = float(str(valor).replace(',','.'))
+        except ValueError:
+            raise ValidacaoError('O CVSS deve ser um número.')
+        if not 0 <= cvss <= 10:
+            raise ValidacaoError('O CVSS deve ser um valor entre 0 e 10.')
+        return cvss
+    
+    def validar_cvss_consistente(self, id_vuln, cvss):
+        for ativo in self.equipamentos.values():
+            for v in ativo.vulnerabilidades:
+                if v.id.lower() == id_vuln.lower() and v.cvss != cvss:
+                    raise ValidacaoError(f'O ID: {v.id} já existe com CVSS: {v.cvss} em outro ativo.')
+        return cvss
+    
+    @staticmethod
+    def validar_data(valor):
+        valor = valor.strip()
+        try:
+            datetime.strptime(valor, '%d/%m/%Y')
+        except ValueError:
+            raise ValidacaoError('Data inválida. Considere o formato DD/MM/AAAA.')
+        return valor
+    
+    def validar_id_vuln(self, equip, id_vuln):
+        id_vuln = self.validar_texto(id_vuln, 'ID da vulnerabilidade')
+        if any(v.id.lower() == id_vuln.lower() for v in equip.vulnerabilidades):
+            raise ValidacaoError('Esse ativo já possui uma vulnerabilidade com esse ID.')
+        return id_vuln
+        
     # VULNERABILIDADES
     def cadastrar_vulnerabilidade(self, id_ativo, id_vuln, descricao, categoria, cvss, status, data):
         equip = self.buscar_id(id_ativo)
+        
+        id_vuln = self.validar_id_vuln(equip, id_vuln)
+        descricao = self.validar_texto(descricao, 'descrição')
+        categoria = self.validar_texto(categoria, 'categoria')
+        cvss = self.validar_cvss(cvss)
+        self.validar_cvss_consistente(id_vuln, cvss)
+        status = self.validar_status(status)
+        data = self.validar_data(data)
 
-        if not id_vuln.strip() or not descricao.strip() or not categoria.strip():
-            raise ValidacaoError('Os campos de ID, descrição e categoria devem ser preenchidos.')
-
-        if any(v.id.lower() == id_vuln.strip().lower() for v in equip.vulnerabilidades):
-            raise ValidacaoError('Esse ativo já possui uma vulnerabilidade com esse ID.')
-
-        try:
-            cvss = float(cvss)
-        except (TypeError, ValueError):
-            raise ValidacaoError('O CVSS deve ser um número.')
-
-        if not 0 <= cvss <= 10:
-            raise ValidacaoError('O CVSS deve ser um número entre 0 e 10.')
-
-        if status not in Status.__members__:
-            raise ValidacaoError(f'Status inválido: {status}')
-
-        try:
-            datetime.strptime(data, '%d/%m/%Y')
-        except ValueError:
-            raise ValidacaoError('Data inválida. Considere o formato DD/MM/AAAA.')
-
-        for ativo in self.equipamentos.values():
-            for v in ativo.vulnerabilidades:
-                if v.id.lower() == id_vuln.strip().lower() and v.cvss != cvss:
-                    raise ValidacaoError(f'O ID: {v.id} já existe com CVSS: {v.cvss} em outro ativo.')
-
-        vuln = Vulnerabilidade(id_vuln.strip(), descricao.strip(), categoria.strip(), cvss, status, data)
+        vuln = Vulnerabilidade(id_vuln, descricao, categoria, cvss, status, data)
         equip.vulnerabilidades.append(vuln)
         self.salvar()
         return vuln
@@ -158,8 +177,8 @@ class Inventario:
         if vuln is None:
             raise ValidacaoError('Esse ativo não possui uma vulnerabilidade com esse ID.')
 
-        if status is not None and status not in Status.__members__:
-            raise ValidacaoError(f'Status inválido: {status}')
+        if status is not None:
+            self.validar_status(status)
 
         if descricao is not None and descricao.strip():
             vuln.descricao = descricao.strip()
