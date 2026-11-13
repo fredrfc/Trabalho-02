@@ -66,7 +66,7 @@ class Inventario:
 
     def buscar_id(self, id_ativo):
         if id_ativo not in self.equipamentos:
-            raise ValidacaoError('Não existe um ativo cadastrado com esse ID.')
+            raise ValidacaoError('\nNão existe um ativo cadastrado com esse ID.')
         return self.equipamentos[id_ativo]
 
     def buscar_hostname(self, hostname):
