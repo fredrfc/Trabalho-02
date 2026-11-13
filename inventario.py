@@ -115,6 +115,9 @@ class Inventario:
     
     @staticmethod
     def validar_cvss(valor):
+        valor = str(valor).strip()
+        if not valor:
+            raise ValidacaoError('O campo de CVSS não pode estar vazio.')
         try:
             cvss = float(str(valor).replace(',','.'))
         except ValueError:
