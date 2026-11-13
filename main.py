@@ -56,7 +56,7 @@ class Menu:
             except ValidacaoError as e:
                 print(f'Erro: {e}')
                 if tentativa < tentativas:
-                    print(f'Tente novamente. ({tentativa}/{tentativas}).')
+                    print(f'\nTente novamente ({tentativa}/{tentativas}).\n')
         raise ValidacaoError('Muitas tentativas inválidas. Operação cancelada.')
 
     def escolher_status(self):
@@ -108,9 +108,9 @@ class Menu:
         escolha = input('Digite 1 ou 2: ').strip()
 
         if escolha == '1':
-            equip = self.inv.buscar_id(self.ler_int('Digite o ID para buscar: '))
+            equip = self.perguntar('Digite o ID de um ativo para buscá-lo: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         elif escolha == '2':
-            equip = self.inv.buscar_hostname(input('Digite o hostname para buscar: '))
+            equip = self.perguntar('Digite o hostname de um ativo para buscá-lo: ', self.inv.buscar_hostname)
         else:
             raise ValidacaoError('Opção de busca inválida.')
 
@@ -141,7 +141,7 @@ class Menu:
         print('\nSucesso! O ativo foi cadastrado.')
 
     def atualizar_ativo(self):
-        id_ativo = self.ler_int('Digite o ID do ativo a ser atualizado: ')
+        id_ativo = self.perguntar('Digite o ID do ativo a ser atualizado: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         equip = self.inv.buscar_id(id_ativo)
         self.mostrar_ativo(equip)
 
@@ -154,7 +154,7 @@ class Menu:
         print(f'\nSucesso! O ativo {id_ativo} foi atualizado.')
 
     def remover_ativo(self):
-        id_ativo = self.ler_int('Digite o ID do ativo a ser removido: ')
+        id_ativo = self.perguntar('Digite o ID do ativo a ser removido: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         equip = self.inv.buscar_id(id_ativo)
         self.mostrar_ativo(equip)
 
@@ -206,7 +206,7 @@ class Menu:
             print('=' * 40)
 
     def atualizar_vulnerabilidade(self):
-        id_ativo = self.ler_int('Digite o ID do ativo para atualizar as vulnerabilidades dele: ')
+        id_ativo = self.perguntar('Digite o ID do ativo para atualizar as vulnerabilidades dele: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         equip = self.inv.buscar_id(id_ativo)
 
         if not equip.vulnerabilidades:
@@ -230,7 +230,7 @@ class Menu:
         print('\nSucesso! A vulnerabilidade foi atualizada.')
 
     def cadastrar_dependencia(self):
-        id_ativo = self.ler_int('Digite o ID do ativo que HERDA o risco: ')
+        id_ativo = self.perguntar('Digite o ID do ativo que HERDA o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         id_dependencia = self.ler_int('Digite o ID do ativo DE QUEM ele herda o risco: ')
         fracao = input('Digite a fração herdada (ex: 0.5; deve ser maior ou igual a 0 e menor do que 1): ').replace(',', '.')
 
