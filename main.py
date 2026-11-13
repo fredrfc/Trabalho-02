@@ -44,6 +44,8 @@ class Menu:
     
     def converter_int(self, texto):
         texto = texto.strip()
+        if not texto:
+            raise ValidacaoError('O campo não pode estar vazio.')
         if not texto.isdigit():
             raise ValidacaoError('Deve ser um número inteiro positivo.')
         convertido = int(texto)
@@ -154,8 +156,8 @@ class Menu:
         print(f'\nSucesso! O ativo {id_ativo} foi atualizado.')
 
     def remover_ativo(self):
-        id_ativo = self.perguntar('Digite o ID do ativo a ser removido: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
-        equip = self.inv.buscar_id(id_ativo)
+        equip = self.perguntar('Digite o ID do ativo a ser removido: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
+        
         self.mostrar_ativo(equip)
 
         confirmacao = input('\nTem certeza que deseja remover este ativo? [s/n]: ').strip().lower()
@@ -163,8 +165,8 @@ class Menu:
             print('Operação cancelada.')
             return
         elif confirmacao == 's':
-            self.inv.remover(id_ativo)
-            print(f'\nSucesso! O ativo {id_ativo} foi removido do sistema.')
+            self.inv.remover(equip.id)
+            print(f'\nSucesso! O ativo {equip.id} foi removido do sistema.')
         else:
             raise ValidacaoError('Digite [s] ou [n].')
 
