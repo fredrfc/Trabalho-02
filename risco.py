@@ -1,5 +1,7 @@
 import numpy as np
 
+STATUS_COM_RISCO = ('ABERTA', 'EM_MANUTENCAO')
+
 def montar_M_v(inventario):
     ativos = inventario.listar_ativos()
     
