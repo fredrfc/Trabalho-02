@@ -1,3 +1,5 @@
+from classes import Severidade
+
 class Vulnerabilidade:
     def __init__(self, id_vulnerabilidade, descricao, categoria, cvss, status, data):
         self.id = id_vulnerabilidade
@@ -21,3 +23,13 @@ class Vulnerabilidade:
     def de_dict(cls, dados):
         return cls(dados["id"], dados["descricao"], dados["categoria"],
                dados["cvss"], dados["status"], dados["data"])
+    
+    @property
+    def severidade(self):
+        if self.cvss >= 9.0:
+            return Severidade.CRITICA
+        if self.cvss >= 7.0:
+            return Severidade.ALTA
+        if self.cvss >= 4.0:
+            return Severidade.MEDIA
+        return Severidade.BAIXA
