@@ -84,7 +84,7 @@ class Menu:
         print(f'Setor: {e.setor}')
         print(f'Vulnerabilidades: {len(e.vulnerabilidades)}')
         for v in e.vulnerabilidades:
-            print(f'  - {v.id}: {v.descricao} [CVSS {v.cvss} | {v.status}]')
+            print(f'  - {v.id}: {v.descricao} [CVSS {v.cvss} | {v.severidade.value} | {v.status}]')
         print(f'Dependências: {e.dependencias if e.dependencias else "Nenhuma"}')
         if e.dependencias:
             for origem, fracao in e.dependencias.items():
@@ -143,8 +143,7 @@ class Menu:
         print('\nSucesso! O ativo foi cadastrado.')
 
     def atualizar_ativo(self):
-        id_ativo = self.perguntar('Digite o ID do ativo a ser atualizado: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
-        equip = self.inv.buscar_id(id_ativo)
+        equip = self.perguntar('Digite o ID do ativo a ser atualizado: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         self.mostrar_ativo(equip)
 
         print('\nPressione [ENTER] para manter o valor atual.')
@@ -152,8 +151,8 @@ class Menu:
         responsavel = input(f'Novo responsável [{equip.responsavel}]: ')
         setor = input(f'Novo setor [{equip.setor}]: ')
 
-        self.inv.atualizar(id_ativo, hostname, responsavel, setor)
-        print(f'\nSucesso! O ativo {id_ativo} foi atualizado.')
+        self.inv.atualizar(equip.id, hostname, responsavel, setor)
+        print(f'\nSucesso! O ativo {equip.id} foi atualizado.')
 
     def remover_ativo(self):
         equip = self.perguntar('Digite o ID do ativo a ser removido: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
@@ -190,26 +189,26 @@ class Menu:
         print('\nSucesso! A vulnerabilidade foi cadastrada.')
 
     def listar_vulnerabilidades(self):
-        pares = self.inv.listar_vulnerabilidades()
-        if not pares:
-            print('\nNenhuma vulnerabilidade cadastrada.')
-            return
+        equip = self.perguntar('Digite o ID do ativo para ver suas vulnerabilidades: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
+        print(f'\nAtivo: {equip.hostname} (ID: {equip.id})')
 
-        print(f'\nVulnerabilidades cadastradas ({len(pares)})')
+        if not equip.vulnerabilidades:
+            print('Esse ativo não possui vulnerabilidades cadastradas.')
+            return 
+
+        print(f'\nVulnerabilidades cadastradas ({len(equip.vulnerabilidades)})')
         print('=' * 40)
-        for equip, v in pares:
-            print(f'Ativo: {equip.hostname} (ID: {equip.id})')
+        for v in equip.vulnerabilidades:
             print(f'ID: {v.id}')
             print(f'Descrição: {v.descricao}')
             print(f'Categoria: {v.categoria}')
-            print(f'CVSS: {v.cvss}')
+            print(f'Severidade: {v.severidade.value} (CVSS: {v.cvss})')
             print(f'Status: {v.status}')
             print(f'Data: {v.data}')
             print('=' * 40)
 
     def atualizar_vulnerabilidade(self):
-        id_ativo = self.perguntar('Digite o ID do ativo para atualizar as vulnerabilidades dele: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
-        equip = self.inv.buscar_id(id_ativo)
+        equip = self.perguntar('Digite o ID do ativo para atualizar as vulnerabilidades dele: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
 
         if not equip.vulnerabilidades:
             raise ValidacaoError('Esse ativo não possui vulnerabilidades cadastradas.')
@@ -228,15 +227,15 @@ class Menu:
         if input('Deseja alterar o status? [s/n]: ').strip().lower() == 's':
             status = self.escolher_status()
 
-        self.inv.atualizar_vulnerabilidade(id_ativo, id_vuln, descricao, categoria, status)
+        self.inv.atualizar_vulnerabilidade(equip.id, id_vuln, descricao, categoria, status)
         print('\nSucesso! A vulnerabilidade foi atualizada.')
 
     def cadastrar_dependencia(self):
-        id_ativo = self.perguntar('Digite o ID do ativo que HERDA o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
-        id_dependencia = self.ler_int('Digite o ID do ativo DE QUEM ele herda o risco: ')
+        equip = self.perguntar('Digite o ID do ativo que HERDA o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
+        dependencia = self.perguntar('Digite o ID do ativo DE QUEM ele herda o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t))).id
         fracao = input('Digite a fração herdada (ex: 0.5; deve ser maior ou igual a 0 e menor do que 1): ').replace(',', '.')
 
-        self.inv.cadastrar_dependencia(id_dependencia, id_ativo, fracao)
+        self.inv.cadastrar_dependencia(dependencia.id, equip.id, fracao)
 
         print('\nSucesso! A dependência foi adicionada ao sistema.')
 
