@@ -25,8 +25,9 @@ def montar_M_v(inventario):
     for ativo in ativos:
         linha = posicao_ativo[ativo.id]
         for vuln in ativo.vulnerabilidades:
-            coluna = posicao_vulnerabilidade[vuln.id.lower()]
-            M[linha, coluna] = 1
+            if vuln.status in STATUS_COM_RISCO:
+                coluna = posicao_vulnerabilidade[vuln.id.lower()]
+                M[linha, coluna] = 1
 
     v = np.zeros(m)
     visto = {}
@@ -112,10 +113,10 @@ def resolver_risco(b, A):
     
     return x.tolist()
 
-def calculo_riscos(inventario):
+def calculo_riscos(inventario, com_fator=True):
     ativos = inventario.listar_ativos()
 
-    b = calcular_b(inventario)
+    b = calcular_b(inventario, com_fator=com_fator)
     A = montar_A(inventario)
     x = resolver_risco(b, A)
 
