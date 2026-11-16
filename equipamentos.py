@@ -2,7 +2,8 @@ from vulnerabilidade import Vulnerabilidade
 
 class Equipamento:
     tipo = None
-    
+    fator_exposicao = 1.0
+
     def __init__(self,id_ativo, hostname, responsavel, setor):
         self.id = id_ativo
         self.hostname = hostname
