@@ -16,18 +16,24 @@ class Inventario:
     # PERSISTÊNCIA
     def salvar(self):
         dados = [e.para_dict() for e in self.equipamentos.values()]
-        with open(self.arquivo, 'w', encoding='utf-8') as f:
-            json.dump(dados, f, ensure_ascii=False, indent=4)
-
+        try:
+            with open(self.arquivo, 'w', encoding='utf-8') as f:
+                json.dump(dados, f, ensure_ascii=False, indent=4)
+        except OSError as e:
+            raise ValidacaoError(f'Não foi possível gravar o arquivo: {e}')
+        
     def carregar(self):
         if not os.path.exists(self.arquivo):
             return
-        with open(self.arquivo, 'r', encoding='utf-8') as f:
-            dados = json.load(f)
-        self.equipamentos = {}
-        for d in dados:
-            equip = FABRICA[d['tipo']].de_dict(d)
-            self.equipamentos[equip.id] = equip
+        try:
+            with open(self.arquivo, 'r', encoding='utf-8') as f:
+                dados = json.load(f)
+            self.equipamentos = {}
+            for d in dados:
+                equip = FABRICA[d['tipo']].de_dict(d)
+                self.equipamentos[equip.id] = equip
+        except (OSError, json.JSONDecodeError, KeyError, TypeError) as e:
+            raise ValidacaoError(f'Arquivo de dados ilegível ou inválido ({self.arquivo}): {e!r}')
     
     @staticmethod
     def validar_texto(valor, campo):
