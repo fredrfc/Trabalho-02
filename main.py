@@ -21,9 +21,9 @@ class Menu:
         }
 
     def exibir(self):
-        print('\n' + '=' * 30)
-        print('SISTEMA DE CADASTRO DE ATIVOS')
-        print('=' * 30)
+        print('\n' + '=' * 34)
+        print('SISTEMA DE GERENCIAMENTO DE ATIVOS')
+        print('=' * 34)
         print('1. Listar todos os ativos')
         print('2. Buscar ativo')
         print('3. Cadastrar novo ativo')
@@ -139,8 +139,11 @@ class Menu:
         setor = self.perguntar('Digite o setor/localização: ', lambda t: self.inv.validar_texto(t, 'setor'))
         tipo = self.escolher_tipo()
         
-        self.inv.cadastrar_ativo(tipo, id_ativo, hostname, responsavel, setor)
+        equip = self.inv.cadastrar_ativo(tipo, id_ativo, hostname, responsavel, setor)
         print('\nSucesso! O ativo foi cadastrado.')
+
+        while input('\nDeseja cadastrar uma vulnerabilidade para este ativo agora? [s/n]: ').strip().lower() == 's':
+            self.pedir_vulnerabilidade(equip)
 
     def atualizar_ativo(self):
         equip = self.perguntar('Digite o ID do ativo a ser atualizado: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
@@ -173,16 +176,14 @@ class Menu:
     def cadastrar_vulnerabilidade(self):
         equip = self.perguntar('Digite o ID de um ativo cadastrado: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         
+        self.pedir_vulnerabilidade(equip)
+
+    def pedir_vulnerabilidade(self, equip):
         id_vuln = self.perguntar('Digite o ID da vulnerabilidade (ex: CVE-2026-9855): ', lambda t: self.inv.validar_id_vuln(equip, t))
-
         descricao = self.perguntar('Escreva a descrição: ', lambda t: self.inv.validar_texto(t, 'descrição'))
-
         categoria = self.perguntar('Escreva a categoria da vulnerabilidade (ex: Software desatualizado): ', lambda t: self.inv.validar_texto(t, 'categoria'))
-
         cvss = self.perguntar('Digite o CVSS da vulnerabilidade (0 a 10): ', lambda t: self.inv.validar_cvss_consistente(id_vuln, self.inv.validar_cvss(t)))
-        
         status = self.escolher_status()
-        
         data = self.perguntar('Digite a data de identificação (DD/MM/AAAA): ', self.inv.validar_data)
 
         self.inv.cadastrar_vulnerabilidade(equip.id, id_vuln, descricao, categoria, cvss, status, data)
@@ -275,5 +276,7 @@ class Menu:
 if __name__ == '__main__':
     try:
         Menu(Inventario()).executar()
+    except ValidacaoError as e:
+        print(f'\nErro ao iniciar: {e}')
     except (KeyboardInterrupt, EOFError):
         print('\nPrograma encerrado pelo usuário.')
