@@ -36,12 +36,6 @@ class Menu:
         print('10. Consultar risco')
         print('11. Sair')
 
-    def ler_int(self, texto):
-        valor = input(texto).strip()
-        if not valor.isdigit():
-            raise ValidacaoError('Digite um número inteiro positivo.')
-        return int(valor)
-    
     def converter_int(self, texto):
         texto = texto.strip()
         if not texto:
