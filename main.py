@@ -82,7 +82,7 @@ class Menu:
         print(f'Dependências: {e.dependencias if e.dependencias else "Nenhuma"}')
         if e.dependencias:
             for origem, fracao in e.dependencias.items():
-                print(f'Herda {fracao: .0%} do ativo {origem}')
+                print(f'Herda {fracao:.0%} do ativo {origem}')
         print('=' * 30)
 
     # ATIVOS
@@ -232,7 +232,7 @@ class Menu:
 
         self.inv.cadastrar_dependencia(dependencia.id, equip.id, fracao)
 
-        print(f'\nSucesso! {equip.hostname} agora herda {fracao} do risco de {dependencia.hostname}.')
+        print(f'\nSucesso! {equip.hostname} agora herda {fracao:.0%} do risco de {dependencia.hostname}.')
 
     def consultar_risco(self):
         resultados = calculo_riscos(self.inv)
