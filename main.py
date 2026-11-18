@@ -233,12 +233,12 @@ class Menu:
 
     def cadastrar_dependencia(self):
         equip = self.perguntar('Digite o ID do ativo que HERDA o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
-        dependencia = self.perguntar('Digite o ID do ativo DE QUEM ele herda o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t))).id
+        dependencia = self.perguntar('Digite o ID do ativo DE QUEM ele herda o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         fracao = input('Digite a fração herdada (ex: 0.5; deve ser maior ou igual a 0 e menor do que 1): ').replace(',', '.')
 
         self.inv.cadastrar_dependencia(dependencia.id, equip.id, fracao)
 
-        print('\nSucesso! A dependência foi adicionada ao sistema.')
+        print(f'\nSucesso! {equip.hostname} agora herda {fracao} do risco de {dependencia.hostname}.')
 
     def consultar_risco(self):
         resultados = calculo_riscos(self.inv)
