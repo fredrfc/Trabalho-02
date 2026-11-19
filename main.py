@@ -113,16 +113,16 @@ class Menu:
         self.mostrar_ativo(equip)
 
     def escolher_tipo(self):
-        tipos = list(TipoAtivo)
         print('\nTIPOS DE ATIVOS:')
-        for i, t in enumerate(tipos, 1):
-            print(f'{i}. {t.name}')
+        for t in TipoAtivo:
+            print(f'{t.value}. {t.name}')
 
         def validar(texto):
             n = self.converter_int(texto)
-            if not 1 <= n <= len(tipos):
-                raise ValidacaoError(f'{n} não é uma opção válida.')
-            return tipos[n - 1].name
+            try:
+                return TipoAtivo(n).name
+            except ValueError:
+                raise ValidacaoError('f{n} não é um código de tipo válido.')
         
         return self.perguntar('Digite o número correspondente ao tipo do ativo: ', validar)
 
@@ -232,7 +232,7 @@ class Menu:
 
         self.inv.cadastrar_dependencia(dependencia.id, equip.id, fracao)
 
-        print(f'\nSucesso! {equip.hostname} agora herda {fracao:.0%} do risco de {dependencia.hostname}.')
+        print(f'\nSucesso! {equip.hostname} agora herda {float(fracao):.0%} do risco de {dependencia.hostname}.')
 
     def consultar_risco(self):
         resultados = calculo_riscos(self.inv)
