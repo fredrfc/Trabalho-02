@@ -36,12 +36,6 @@ class Menu:
         print('10. Consultar risco')
         print('11. Sair')
 
-    def ler_int(self, texto):
-        valor = input(texto).strip()
-        if not valor.isdigit():
-            raise ValidacaoError('Digite um número inteiro positivo.')
-        return int(valor)
-    
     def converter_int(self, texto):
         texto = texto.strip()
         if not texto:
@@ -88,7 +82,7 @@ class Menu:
         print(f'Dependências: {e.dependencias if e.dependencias else "Nenhuma"}')
         if e.dependencias:
             for origem, fracao in e.dependencias.items():
-                print(f'Herda {fracao: .0%} do ativo {origem}')
+                print(f'Herda {fracao:.0%} do ativo {origem}')
         print('=' * 30)
 
     # ATIVOS
@@ -119,16 +113,16 @@ class Menu:
         self.mostrar_ativo(equip)
 
     def escolher_tipo(self):
-        tipos = list(TipoAtivo)
         print('\nTIPOS DE ATIVOS:')
-        for i, t in enumerate(tipos, 1):
-            print(f'{i}. {t.name}')
+        for t in TipoAtivo:
+            print(f'{t.value}. {t.name}')
 
         def validar(texto):
             n = self.converter_int(texto)
-            if not 1 <= n <= len(tipos):
-                raise ValidacaoError(f'{n} não é uma opção válida.')
-            return tipos[n - 1].name
+            try:
+                return TipoAtivo(n).name
+            except ValueError:
+                raise ValidacaoError('f{n} não é um código de tipo válido.')
         
         return self.perguntar('Digite o número correspondente ao tipo do ativo: ', validar)
 
@@ -233,12 +227,12 @@ class Menu:
 
     def cadastrar_dependencia(self):
         equip = self.perguntar('Digite o ID do ativo que HERDA o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
-        dependencia = self.perguntar('Digite o ID do ativo DE QUEM ele herda o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t))).id
+        dependencia = self.perguntar('Digite o ID do ativo DE QUEM ele herda o risco: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         fracao = input('Digite a fração herdada (ex: 0.5; deve ser maior ou igual a 0 e menor do que 1): ').replace(',', '.')
 
         self.inv.cadastrar_dependencia(dependencia.id, equip.id, fracao)
 
-        print('\nSucesso! A dependência foi adicionada ao sistema.')
+        print(f'\nSucesso! {equip.hostname} agora herda {float(fracao):.0%} do risco de {dependencia.hostname}.')
 
     def consultar_risco(self):
         resultados = calculo_riscos(self.inv)

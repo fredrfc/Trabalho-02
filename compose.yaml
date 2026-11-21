@@ -1,0 +1,14 @@
+name: trab02_2026_2_12621cbs223
+
+services:
+  app:
+    build: .
+    image: trab02_2026_2_12621cbs223
+    container_name: trab02_2026_2_12621cbs223
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    environment:
+      DATA_FILE: /data/arquivo.json
+    volumes:
+      - ./data:/data
