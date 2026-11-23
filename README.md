@@ -119,19 +119,3 @@ docker compose down          # remove o container; os dados em data/ permanecem
 ## Portas
 
 Nenhuma porta é mapeada: a aplicação funciona exclusivamente pelo terminal.
-
-## Execução sem Docker (opcional)
-
-```bash
-python3 -m venv .venv
-. .venv/bin/activate
-pip install -r requirements.txt
-DATA_FILE=data/arquivo.json python main.py
-```
-
-## Testes (opcional, fora do container)
-
-```bash
-pip install pytest
-python -m pytest -v
-```
