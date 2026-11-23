@@ -2,6 +2,7 @@ from classes import Status, TipoAtivo
 from excecoes import ValidacaoError
 from inventario import Inventario
 from risco import calculo_riscos
+from formatacao import caixa, ficha, tabela, titulo
 
 
 class Menu:
@@ -21,9 +22,7 @@ class Menu:
         }
 
     def exibir(self):
-        print('\n' + '=' * 34)
-        print('SISTEMA DE GERENCIAMENTO DE ATIVOS')
-        print('=' * 34)
+        titulo('SISTEMA DE GERENCIAMENTO DE ATIVOS')
         print('1. Listar todos os ativos')
         print('2. Buscar ativo')
         print('3. Cadastrar novo ativo')
@@ -69,21 +68,27 @@ class Menu:
         
         return self.perguntar('Digite o número correspondente ao status da vulnerabilidade: ', validar_escolha_status)
 
-    def mostrar_ativo(self, e):
-        print('\n' + '=' * 30)
-        print(f'ID: {e.id}')
-        print(f'Hostname: {e.hostname}')
-        print(f'Tipo: {e.tipo}')
-        print(f'Responsável: {e.responsavel}')
-        print(f'Setor: {e.setor}')
-        print(f'Vulnerabilidades: {len(e.vulnerabilidades)}')
+    def mostrar_ativo(self, e, titulo='ATIVO ENCONTRADO'):
+        itens = [
+            ('ID', e.id),
+            ('Hostname', e.hostname),
+            ('Tipo', e.tipo),
+            ('Responsável', e.responsavel),
+            ('Setor', e.setor),
+            ('Vulnerabilidades', len(e.vulnerabilidades)),
+        ]
+      
         for v in e.vulnerabilidades:
-            print(f'  - {v.id}: {v.descricao} [CVSS {v.cvss} | {v.severidade.value} | {v.status}]')
-        print(f'Dependências: {e.dependencias if e.dependencias else "Nenhuma"}')
+            itens.append(f'  - {v.id}: {v.descricao} [CVSS {v.cvss} | {v.severidade.value} | {v.status}]')
+        
         if e.dependencias:
+            itens.append(('Dependências', len(e.dependencias)))
             for origem, fracao in e.dependencias.items():
-                print(f'Herda {fracao:.0%} do ativo {origem}')
-        print('=' * 30)
+                itens.append(f'Herda {fracao:.0%} do risco efetivo do ativo {origem}')
+        else:
+            itens.append(('Dependências', 'Nenhuma'))
+
+        ficha(titulo, itens)
 
     # ATIVOS
     def listar_ativos(self):
@@ -92,11 +97,10 @@ class Menu:
             print('\nAinda não foi cadastrado nenhum ativo.')
             return
         print(f'\nAtivos cadastrados ({len(ativos)}):')
-        print('=' * 72)
-        for e in ativos:
-            print(f'ID {e.id} | {e.hostname} | {e.tipo} | {e.responsavel} | {e.setor}'
-                  f' | {len(e.vulnerabilidades)} vulnerabilidade(s)')
-        print('=' * 72)
+        tabela(
+            ['ID', 'Hostname', 'Tipo', 'Responsável', 'Setor', 'Vulnerabilidades'],
+            [(e.id, e.hostname, e.tipo, e.responsavel, e.setor, len(e.vulnerabilidades)) for e in ativos],
+        )
 
     def buscar_ativo(self):
         print('\n1. Buscar pelo ID')
@@ -154,7 +158,7 @@ class Menu:
     def remover_ativo(self):
         equip = self.perguntar('Digite o ID do ativo a ser removido: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
         
-        self.mostrar_ativo(equip)
+        self.mostrar_ativo(equip, 'ATIVO A SER REMOVIDO')
 
         confirmacao = input('\nTem certeza que deseja remover este ativo? [s/n]: ').strip().lower()
         if confirmacao == 'n':
@@ -241,10 +245,10 @@ class Menu:
             print('\nNão há nenhum ativo para ser consultado.')
             return
 
-        print('=' * 63)
-        for r in resultados:
-            print(f'ID: {r["id"]} | Hostname: {r["hostname"]} | Risco Próprio: {r["risco_proprio"]:.2f} | Risco Efetivo: {r["risco_efetivo"]:.2f}')
-        print('=' * 63)
+        tabela(
+            ['ID', 'Hostname', 'Risco Próprio', 'Risco Efetivo'],
+            [(r['id'], r['hostname'], f"{r['risco_proprio']:.2f}", f"{r['risco_efetivo']:.2f}") for r in resultados],
+        )
 
     # LAÇO PRINCIPAL
     def executar(self):
