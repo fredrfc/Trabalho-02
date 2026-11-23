@@ -196,15 +196,14 @@ class Menu:
             return 
 
         print(f'\nVulnerabilidades cadastradas ({len(equip.vulnerabilidades)})')
-        print('=' * 40)
         for v in equip.vulnerabilidades:
-            print(f'ID: {v.id}')
-            print(f'Descrição: {v.descricao}')
-            print(f'Categoria: {v.categoria}')
-            print(f'Severidade: {v.severidade.value} (CVSS: {v.cvss})')
-            print(f'Status: {v.status}')
-            print(f'Data: {v.data}')
-            print('=' * 40)
+            ficha(f'VULNERABILIDADE {v.id}', [
+                ('Descrição', v.descricao),
+                ('Categoria', v.categoria),
+                ('Severidade', f'{v.severidade.value} (CVSS: {v.cvss})'),
+                ('Status', v.status),
+                ('Data', v.data),
+            ])
 
     def atualizar_vulnerabilidade(self):
         equip = self.perguntar('Digite o ID do ativo para atualizar as vulnerabilidades dele: ', lambda t: self.inv.buscar_id(self.converter_int(t)))
