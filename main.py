@@ -2,7 +2,7 @@ from classes import Status, TipoAtivo
 from excecoes import ValidacaoError
 from inventario import Inventario
 from risco import calculo_riscos
-from formatacao import caixa, ficha, tabela, titulo
+from formatacao import ficha, tabela, titulo
 
 
 class Menu:
