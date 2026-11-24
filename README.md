@@ -21,6 +21,7 @@ trab02_2026_2_12621cbs223/
 ├── .dockerignore
 ├── .gitignore
 ├── data/                  # volume: guarda o arquivo.json entre reinicializações
+├── dados_exemplo.json     # dados de exemplo para a aplicação
 ├── classes.py             # enumerações (tipos, severidade, status)
 ├── equipamentos.py        # classe Equipamento e subclasses
 ├── vulnerabilidade.py     # classe Vulnerabilidade
