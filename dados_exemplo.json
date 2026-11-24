@@ -76,7 +76,7 @@
         "id": 3,
         "tipo": "ROTEADOR",
         "hostname": "rt-01",
-        "responsavel": "Marina Alves",
+        "responsavel": "Lucas",
         "setor": "Infraestrutura",
         "vulnerabilidades": [
             {
@@ -110,7 +110,7 @@
         "id": 4,
         "tipo": "BANCO_DE_DADOS",
         "hostname": "bd-01",
-        "responsavel": "Rafael Costa",
+        "responsavel": "Rafael",
         "setor": "TI",
         "vulnerabilidades": [
             {
