@@ -6,6 +6,7 @@ __pycache__
 test_*.py
 data
 *.json
+!dados_exemplo.json
 *.log
 Dockerfile
 compose.yaml
