@@ -12,3 +12,11 @@ services:
       DATA_FILE: /data/arquivo.json
     volumes:
       - ./data:/data
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 100
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
