@@ -1,0 +1,145 @@
+[
+    {
+        "id": 1,
+        "tipo": "NOTEBOOK",
+        "hostname": "nb-01",
+        "responsavel": "Ana",
+        "setor": "Financeiro",
+        "vulnerabilidades": [
+            {
+                "id": "CVE-9999-0001",
+                "descricao": "Falha no leitor de documentos permite executar código ao abrir um arquivo manipulado",
+                "categoria": "Execução remota de código",
+                "cvss": 7.8,
+                "status": "ABERTA",
+                "data": "03/11/2026"
+            },
+            {
+                "id": "CVE-9999-0002",
+                "descricao": "Antivírus desatualizado deixa de detectar ameaças conhecidas",
+                "categoria": "Software desatualizado",
+                "cvss": 7.4,
+                "status": "EM_MANUTENCAO",
+                "data": "05/11/2026"
+            },
+            {
+                "id": "CVE-9999-0003",
+                "descricao": "Navegador desatualizado exibe conteúdo malicioso sem alerta ao abrir links encurtados",
+                "categoria": "Navegador desatualizado",
+                "cvss": 4.3,
+                "status": "CORRIGIDA",
+                "data": "20/10/2026"
+            }
+        ],
+        "dependencias": {
+            "2": 0.1
+        }
+    },
+    {
+        "id": 2,
+        "tipo": "SERVIDOR",
+        "hostname": "srv-web-01",
+        "responsavel": "Carlos",
+        "setor": "TI",
+        "vulnerabilidades": [
+            {
+                "id": "CVE-9999-0010",
+                "descricao": "Biblioteca de registros (logs) permite execução remota de código por mensagens manipuladas",
+                "categoria": "Software desatualizado",
+                "cvss": 9.8,
+                "status": "ABERTA",
+                "data": "02/11/2026"
+            },
+            {
+                "id": "CVE-9999-0011",
+                "descricao": "Serviço de acesso remoto (SSH) com condição de corrida permite execução remota de código",
+                "categoria": "Software desatualizado",
+                "cvss": 8.1,
+                "status": "EM_MANUTENCAO",
+                "data": "08/11/2026"
+            },
+            {
+                "id": "CVE-9999-0012",
+                "descricao": "Protocolo de criptografia obsoleto habilitado permite decifrar parte do tráfego",
+                "categoria": "Protocolo obsoleto",
+                "cvss": 3.4,
+                "status": "ACEITA_COMO_RISCO",
+                "data": "10/11/2026"
+            }
+        ],
+        "dependencias": {
+            "3": 0.2,
+            "4": 0.3
+        }
+    },
+    {
+        "id": 3,
+        "tipo": "ROTEADOR",
+        "hostname": "rt-01",
+        "responsavel": "Marina Alves",
+        "setor": "Infraestrutura",
+        "vulnerabilidades": [
+            {
+                "id": "CVE-9999-0020",
+                "descricao": "Interface web administrativa permite criar conta de administrador sem autenticação",
+                "categoria": "Interface administrativa exposta",
+                "cvss": 10.0,
+                "status": "ABERTA",
+                "data": "01/11/2026"
+            },
+            {
+                "id": "CVE-9999-0021",
+                "descricao": "Serviço de configuração remota exposto permite executar comandos sem autenticação",
+                "categoria": "Serviço exposto indevidamente",
+                "cvss": 9.8,
+                "status": "CORRIGIDA",
+                "data": "12/10/2026"
+            },
+            {
+                "id": "CVE-9999-0012",
+                "descricao": "Protocolo de criptografia obsoleto habilitado permite decifrar parte do tráfego",
+                "categoria": "Protocolo obsoleto",
+                "cvss": 3.4,
+                "status": "ABERTA",
+                "data": "10/11/2026"
+            }
+        ],
+        "dependencias": {}
+    },
+    {
+        "id": 4,
+        "tipo": "BANCO_DE_DADOS",
+        "hostname": "bd-01",
+        "responsavel": "Rafael Costa",
+        "setor": "TI",
+        "vulnerabilidades": [
+            {
+                "id": "CVE-9999-0030",
+                "descricao": "Falha de autenticação no banco permite acesso sem senha a partir da rede interna",
+                "categoria": "Falha de autenticação",
+                "cvss": 9.1,
+                "status": "ABERTA",
+                "data": "04/11/2026"
+            },
+            {
+                "id": "CVE-9999-0031",
+                "descricao": "Injeção de SQL em extensão do banco permite executar comandos como administrador",
+                "categoria": "Injeção de SQL",
+                "cvss": 8.8,
+                "status": "EM_MANUTENCAO",
+                "data": "06/11/2026"
+            },
+            {
+                "id": "CVE-9999-0011",
+                "descricao": "Serviço de acesso remoto (SSH) com condição de corrida permite execução remota de código",
+                "categoria": "Software desatualizado",
+                "cvss": 8.1,
+                "status": "ABERTA",
+                "data": "08/11/2026"
+            }
+        ],
+        "dependencias": {
+            "3": 0.1
+        }
+    }
+]
