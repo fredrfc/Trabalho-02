@@ -12,4 +12,8 @@ COPY *.py ./
 
 RUN mkdir -p /data
 
+RUN useradd --create-home aluno \
+    && chown -R aluno:aluno /app /data
+USER aluno
+
 CMD ["python", "main.py"]
