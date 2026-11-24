@@ -27,6 +27,7 @@ trab02_2026_2_12621cbs223/
 ├── inventario.py          # regras de negócio e persistência em JSON
 ├── risco.py               # modelo de risco (sistema linear)
 ├── excecoes.py
+├── formatacao.py
 └── main.py                # menu interativo
 ```
 
