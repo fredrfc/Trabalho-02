@@ -7,7 +7,7 @@ def titulo(texto):
     print(f'\n{barra}\n{texto}\n{barra}')
 
 
-def _quebrar(linha, maximo, indent=''):
+def quebrar(linha, maximo, indent=''):
     """Quebra 'linha' em várias linhas que cabem em 'maximo' caracteres,
     sem cortar palavras ao meio quando possível. As linhas de continuação
     recebem 'indent' na frente, para alinhar embaixo do texto original."""
@@ -18,19 +18,6 @@ def _quebrar(linha, maximo, indent=''):
         break_on_hyphens=False,
     )
     return partes or ['']
-
-
-def caixa(linhas, maximo=80):
-    """Mostra as linhas entre barras do tamanho da linha mais longa (limitado ao tamanho do terminal)."""
-    linhas_quebradas = []
-    for linha in linhas:
-        linhas_quebradas.extend(_quebrar(linha, maximo))
-
-    largura = max((len(linha) for linha in linhas_quebradas), default=0)
-    print('\n' + '=' * largura)
-    for linha in linhas_quebradas:
-        print(linha)
-    print('=' * largura)
 
 
 def tabela(cabecalhos, linhas):
@@ -72,9 +59,9 @@ def ficha(titulo_ficha, itens, maximo=80):
         else:
             primeira = item
             indent = ''
-        linhas.extend(_quebrar(primeira, maximo, indent))
+        linhas.extend(quebrar(primeira, maximo, indent))
 
-    titulo_quebrado = _quebrar(titulo_ficha, maximo)
+    titulo_quebrado = quebrar(titulo_ficha, maximo)
     largura = max(len(linha) for linha in titulo_quebrado + linhas)
 
     print('\n' + '=' * largura)
