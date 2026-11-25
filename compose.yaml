@@ -5,6 +5,7 @@ services:
     build: .
     image: trab02_2026_2_12621cbs223
     container_name: trab02_2026_2_12621cbs223
+    user: 1040:1041
     stdin_open: true
     tty: true
     restart: unless-stopped
