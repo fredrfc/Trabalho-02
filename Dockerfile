@@ -17,4 +17,4 @@ RUN useradd --create-home aluno \
     && chown -R aluno:aluno /app /data
 USER aluno
 
-CMD ["sh", "-c", "[ -f \"$DATA_FILE\" ] || cp dados_exemplo.json \"$DATA_FILE\"; exec python main.py"]
+CMD ["sh", "-ec", "[ -f \"$DATA_FILE\" ] || cp dados_exemplo.json \"$DATA_FILE\"; exec python main.py"]
