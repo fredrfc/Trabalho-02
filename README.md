@@ -48,7 +48,7 @@ docker compose version
 1. Obtenha o código e entre na pasta do projeto:
 
 ```bash
-git clone <https://github.com/fredrfc/Trabalho-02.git> trab02_2026_2_12621cbs223
+git clone https://github.com/fredrfc/Trabalho-02.git trab02_2026_2_12621cbs223
 cd trab02_2026_2_12621cbs223
 ```
 
