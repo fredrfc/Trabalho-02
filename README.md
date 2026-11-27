@@ -16,7 +16,7 @@ com cálculo de risco por álgebra linear. A interface é um menu no terminal, e
 
 ## Identificador do projeto
 
-`trab02_2026_2_12621cbs223` é utilizado como nome do diretório local, do projeto Docker Compose, do container e da imagem. A matrícula é representada em letras minúsculas para atender às regras de nomenclatura das imagens Docker. O repositório no GitHub chama-se `Trabalho-02`.
+`trab02_2026_2_12621cbs223` é utilizado como nome do diretório local, do projeto Docker Compose, do container e da imagem. O repositório no GitHub chama-se `Trabalho-02`.
 
 ## Estrutura
 
@@ -53,7 +53,7 @@ docker compose version
 - Acesso autorizado ao Docker, conforme as regras do ambiente de execução.
 - Permissão de leitura e escrita no diretório `data/` para o usuário do container.
 
-O `compose.yaml` define `user: 1040:1041` (UID e GID). Em Linux, esses identificadores devem ser compatíveis com as permissões do diretório `data/` no host. Em outro ambiente, pode ser necessário adequar essa configuração. No servidor compartilhado, siga as orientações administrativas e não utilize permissões indiscriminadas como `chmod 777`.
+O `compose.yaml` define `user: 1040:1041` (UID e GID). Em Linux, esses identificadores devem ser compatíveis com as permissões do diretório `data/` no host. Em outro ambiente, pode ser necessário adequar essa configuração.
 
 ## Construção (build)
 
@@ -140,7 +140,7 @@ O módulo `risco.py` utiliza NumPy para calcular o risco dos equipamentos por me
 
 | Símbolo | Significado |
 | --- | --- |
-| $M$ | Matriz binária de incidência entre equipamentos e vulnerabilidades |
+| $M$ | Matriz de incidência entre equipamentos e vulnerabilidades |
 | $v$ | Vetor das severidades CVSS |
 | $b$ | Vetor de risco próprio |
 | $A$ | Matriz de dependências entre equipamentos |
